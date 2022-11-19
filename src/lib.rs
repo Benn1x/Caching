@@ -1,9 +1,10 @@
 #![allow(non_snake_case)]
 
 
-///The cache is in form of a Struct with to elements the first Element is T
-///T is lamda to execute costum code in the cache 
-///T needs to return a bool so the system knows if the task were sucsess full or not
+///The cache is in form of a Struct where it takes 3 Generics T and E
+///where T is the linker and E the linked Value
+///F is lamda to execute costum code in the cache 
+///F needs to return a bool so the system knows if the task were sucsess full or not
 ///The second part of the cache is the heart of the cache a Costum list type
 ///to get even better performance
 pub struct Cache<E, T>
@@ -39,6 +40,7 @@ impl<E, T> Cache<E, T>
 ///This is the list used to increse performance
 ///by about 12.3 times against an HashMap
 pub struct Lists<T,E>
+    where T: std::cmp::PartialEq, E: Copy
 {
     linked: Vec<T>,
     list: Vec<E>,
