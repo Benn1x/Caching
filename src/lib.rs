@@ -1,5 +1,4 @@
 #![allow(non_snake_case)]
-//TODO Implement F!!!
 
 ///The cache is in form of a Struct with two elements
 ///The second part of the cache is the heart of the cache a Costume list type
@@ -77,6 +76,7 @@ impl<E, T> Cache<E, T>
 ///by about 12.3 times against an HashMap
 #[derive(Clone)]
 pub struct Lists<T,E>
+    where T: std::cmp::PartialEq, E: Copy
 {
     linked: Vec<T>,
     list: Vec<E>,
