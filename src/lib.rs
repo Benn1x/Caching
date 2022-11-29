@@ -108,7 +108,7 @@ impl<T,E> Lists<T, E>
     
     }
 
-} 
+}
 #[cfg(test)]
 mod tests {
     use super::*;
