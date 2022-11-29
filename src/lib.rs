@@ -1,36 +1,73 @@
 #![allow(non_snake_case)]
+//TODO Implement F!!!
 
-
-///The cache is in form of a Struct with to elements the first Element is T
-///T is lamda to execute costum code in the cache 
-///T needs to return a bool so the system knows if the task were sucsess full or not
-///The second part of the cache is the heart of the cache a Costum list type
-///to get even better performance
+///The cache is in form of a Struct with two elements
+///The second part of the cache is the heart of the cache a Costume list type
+///to get the needed performance for my project
 pub struct Cache<E, T>
-    where  T: std::cmp::PartialEq + Copy, E: Copy 
+    where T: std::cmp::PartialEq + Copy, E: Copy 
 {
+    function: fn(Lists<T, E>)-> bool,
     cache: Lists<T,E>
 }
 
 impl<E, T> Cache<E, T>
     where T: std::cmp::PartialEq + Copy, E: Copy 
 {
-    ///This Creats a new Cache
-    pub fn new() -> Self{
-        Self { cache: Lists::new() }
+    ///fn new() creates a new cache
+    ///as an argument it takes an fn(Lists<E, T>) what returns a bool, to check if it had success or failure
+    /// # Examples
+    ///```rust
+    /// use Caching;
+    /// fn main() -> (){
+    ///     let cache = caching::Cache::<i32,String>::new(|a/* This is a lists<i32, String>*/|-> bool {return true});
+    ///     // Some Code
+    /// }
+    /// ```
+
+    pub fn new(function: fn(Lists<T, E>)-> bool) -> Self{
+        Self { function, cache: Lists::new() }
     }
-    /// calles the expression and parse an &mut reference of the Cache
+    /// calls the expression and parse the Cache cache into it
     /// this makes it possible to execute code directly in the cache
+    /// # Examples
+    ///```rust
+    /// use Caching;
+    /// fn main() -> (){
+    ///     let cache = caching::Cache::<i32,String>::new(|a/* This is a lists<i32, String>*/|-> bool {return true});
+    ///     cache.call(); //This executes the cade in the cache
+    ///     // Some Code
+    /// }
+    /// ```
     pub fn call(&mut self)-> bool{
-        false
+        (self.function)(self.cache.clone())
     }
 
     ///insert a linked value into the cache
+    /// # Examples
+    ///```rust
+    /// use Caching;
+    /// fn main() -> (){
+    ///     let cache = caching::Cache::<i32,String>::new(|a/* This is a lists<i32, String>*/|-> bool {return true});
+    ///     cache.insert(4,"4".to_string()); //This puts the values 4 and "4" in the cache
+    ///     // Some Code
+    /// }
+    /// ```
     pub fn insert(&mut self, link: T, value: E){
         self.cache.push(link, value);
     }
 
-    ///gets the value ot of the cache
+    ///insert a linked value into the cache
+    /// # Examples
+    ///```rust
+    /// use Caching;
+    /// fn main() -> (){
+    ///     let cache = caching::Cache::<i32,String>::new(|a/* This is a lists<i32, String>*/|-> bool {return true});
+    ///     cache.insert(4,"4".to_string()); //This puts the values 4 and "4" in the cache
+    ///     cache.get(4); //returns Option enum with None if the value is not the cache and Some(), in this case Some("4")
+    ///     // Some Code
+    /// }
+    /// ```
     pub fn get(&self, link: T)->Option<E>{
         self.cache.get(link)
     }
@@ -38,6 +75,7 @@ impl<E, T> Cache<E, T>
 
 ///This is the list used to increse performance
 ///by about 12.3 times against an HashMap
+#[derive(Clone)]
 pub struct Lists<T,E>
 {
     linked: Vec<T>,
@@ -77,7 +115,7 @@ mod tests {
     use super::*;
     #[test]
     fn it_works() {
-        let mut cache = Cache::<i32,i32>::new();
+        let mut cache = Cache::<i32,i32>::new(|a|->bool{true});
         cache.insert(1,3);
         cache.insert(2,3);
         cache.insert(3,3);
@@ -86,7 +124,7 @@ mod tests {
         cache.insert(6,3);
         cache.insert(7,3);
         cache.insert(8,9);
-
         assert_eq!(9, cache.get(8).unwrap());
+        assert!(cache.call());
     }
 }
